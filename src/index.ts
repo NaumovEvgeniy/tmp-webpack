@@ -143,6 +143,7 @@ const pressedKey = (delta: number, pivotFrontLeft: Mesh, pivotFrontRight: Mesh, 
 }
 
 let car1: car = new car(new Vector3(0, 2, 0), new Vector3(0, 0, -1.8), new Vector3(0, 0, 1.8), new Vector3(2.5, -1, -3.8), new Vector3(2.5, -1, 3.8), new Vector3(-4.5, -1, -2), new Vector3(-4.5, -1, 2), 50, new Vector3(0, 0, -50));
+let car2: car = new car(new Vector3(50, 2, 0), new Vector3(-50, 0, -1.8), new Vector3(-50, 0, 1.8), new Vector3(2.5, -1, -3.8), new Vector3(2.5, -1, 3.8), new Vector3(45.5, -1, -2), new Vector3(45.5, -1, 2), 100, new Vector3(50, 0, -50));
 
 function afterRender(car: car) {
   F = engine.getFps();
@@ -199,7 +200,7 @@ const assembleCar = (car: car, color: Color3, scene: Scene) =>  {
   //Корпус машины
   let materialTop = createMaterialColor("materialtop", scene, color);
 
-  carTop = car.createTop(3.0, 10.0, 4.0, "carTop", car.top, materialTop, scene);
+  carTop = car.createTop(3.0, 10.0, 4.0, "carTop", car.top, materialTop);
   camera.parent = carTop;
 
   //Колеса
@@ -227,20 +228,16 @@ const assembleCar = (car: car, color: Color3, scene: Scene) =>  {
 }
 
 const unassembleCar = (car: car) =>  {
-  console.log(car.topCar);
-  if (car.topCar) {
+  /*if (car.topCar) {
     car.topCar.getScene().onAfterRenderObservable.addOnce(() => {
-      car.topCar.dispose();
+      car.topCar.dispose(true, false);
     });
-  }
+  }*/
+  car.topCar.dispose(true, false);
 }
 
 const createScene = () => {
   const scene: Scene = new Scene(engine);
-
-
-  //@ts-ignore
-  window.scene = scene;
 
   scene.clearColor = new Color4(0.5, 0.8, 1);
 
@@ -293,7 +290,7 @@ const createScene = () => {
   scene.beginAnimation(box, 0, 2 * frameRate, true);
 
   //assembleCar(car1, new Color3(Math.random(), Math.random(), Math.random()), scene);
-  assembleCar(car1, new Color3(0, 0, 1), scene);
+  assembleCar(car2, new Color3(0, 0, 1), scene);
 
   ///////////////
 
@@ -308,15 +305,14 @@ const createScene = () => {
   }));
 
   //движение
-  /*scene.registerAfterRender(() => {
-    afterRender(car1);
-  });*/
+  scene.registerAfterRender(() => {
+    afterRender(car2);
+  });
 
   return scene;
 }
 
 window.onload = function() {
-  console.log("fggfg");
   const socket = io('http://localhost:3000');
 
   /*socket.emit('clientToServer', "Hi, server!");
@@ -325,7 +321,7 @@ window.onload = function() {
     alert(data);
   })*/
 
-  let newCar = new car (new Vector3(0, 2, 0), new Vector3(0, 0, -1.8), new Vector3(0, 0, 1.8), new Vector3(2.5, -1, -3.8), new Vector3(2.5, -1, 3.8), new Vector3(-4.5, -1, -2), new Vector3(-4.5, -1, 2), 50, new Vector3(0, 0, -50));
+  let newCar = car2;
   socket.emit('newUser', newCar);
 
   socket.on('updateUsers', (users: any) => {
@@ -336,7 +332,7 @@ window.onload = function() {
       if(usersCars[id] === undefined && id !== socket.id){
         usersCars[id] = newCar;
         assembleCar(usersCars[id], new Color3(1, 0, 0), scene);
-        // afterRender(usersCars[id]);
+        afterRender(usersCars[id]);
       }
       usersFound[id] = true;
     }
@@ -344,9 +340,8 @@ window.onload = function() {
     //отсоединяем пользователя
     for(let id in usersCars){
       if(!usersFound[id]){
-        //здесь нужно убирать машину с канваса
         unassembleCar(usersCars[id]);
-        // delete usersCars[id];
+        delete usersCars[id];
       }
     }
   })

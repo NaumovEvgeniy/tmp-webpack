@@ -10,18 +10,19 @@ class car {
   private _pivotRight: Vector3;
   private _pivotZ: number;
   private _topNew: Vector3;
-  _topCar: any;
-  _wheelFL: any;
-  _wheelFR: any;
-  _wheelBL: any;
-  _wheelBR: any;
-  _pivotL: any;
-  _pivotR: any;
-  _pivot: any;
+  _topCar: Mesh | any;
+  _wheelFL: Mesh | any;
+  _wheelFR: InstancedMesh | any;
+  _wheelBL: InstancedMesh | any;
+  _wheelBR: InstancedMesh | any;
+  _pivotL: Mesh | any;
+  _pivotR: Mesh | any;
+  _pivot: Mesh | any;
 
-  constructor(theTop: Vector3, theWheelFL: Vector3, theWheelFR: Vector3, theWheelBL: Vector3, theWheelBR: Vector3, thePivotLeft: Vector3, thePivotRight: Vector3, thePivotZ: number, theTopNew: Vector3,
-              theTopCar?: Mesh, theWheelFLMesh?: Mesh, theWheelFRMesh?: Mesh, theWheelBLMesh?: Mesh, theWheelBRMesh?: Mesh, thePivotL?: Mesh, thePivotR?: Mesh, thePivot?: Mesh)
-  {
+  constructor(theTop: Vector3, theWheelFL: Vector3, theWheelFR: Vector3, theWheelBL: Vector3, theWheelBR: Vector3, thePivotLeft: Vector3,
+              thePivotRight: Vector3, thePivotZ: number, theTopNew: Vector3, theTopCar?: Mesh, theWheelFLMesh?: Mesh,
+              theWheelFRMesh?: InstancedMesh, theWheelBLMesh?: InstancedMesh, theWheelBRMesh?: InstancedMesh, thePivotL?: Mesh,
+              thePivotR?: Mesh, thePivot?: Mesh) {
     this._top = theTop;
     this._wheelFrontLeft = theWheelFL;
     this._wheelFrontRight = theWheelFR;
@@ -41,8 +42,8 @@ class car {
     this._pivot = thePivot;
   }
 
-  createTop (theHeight: number, theWidth: number, theDepth: number, name: string, position: Vector3, material: StandardMaterial, scn: Scene) {
-    this._topCar = MeshBuilder.CreateBox(name, { height: theHeight, width: theWidth, depth: theDepth }, scn);
+  createTop (theHeight: number, theWidth: number, theDepth: number, name: string, position: Vector3, material: StandardMaterial) {
+    this._topCar = MeshBuilder.CreateBox(name, { height: theHeight, width: theWidth, depth: theDepth });
     this._topCar.position = position;
     this._topCar.material = material;
     return this._topCar;
@@ -75,8 +76,10 @@ class car {
     return this._pivotR;
   }
 
-  createFirstWheel (wheelDiameter: number, wheelHeight: number, wheelTessellation: number, wheelColor: Color4[], name: string, scn: Scene, material: StandardMaterial, parent: Mesh, position: Vector3) {
-    this._wheelFL = MeshBuilder.CreateCylinder(name, {diameter: wheelDiameter, height: wheelHeight, tessellation: wheelTessellation, faceColors: wheelColor}, scn);
+  createFirstWheel (wheelDiameter: number, wheelHeight: number, wheelTessellation: number, wheelColor: Color4[], name: string, scn: Scene,
+                    material: StandardMaterial, parent: Mesh, position: Vector3) {
+    this._wheelFL = MeshBuilder.CreateCylinder(name, {diameter: wheelDiameter, height: wheelHeight, tessellation: wheelTessellation,
+      faceColors: wheelColor}, scn);
     this._wheelFL.material = material;
     this._wheelFL.rotate(Axis.X, Math.PI/2, Space.WORLD);
     this._wheelFL.parent = parent;
@@ -105,35 +108,35 @@ class car {
     return this._wheelBR;
   }
 
-  get topCar(): Mesh {
+  get topCar(): Mesh | any {
     return this._topCar;
   }
 
-  get wheelFL(): Mesh {
+  get wheelFL(): Mesh | any {
     return this._wheelFL;
   }
 
-  get wheelFR(): InstancedMesh {
+  get wheelFR(): InstancedMesh | any {
     return this._wheelFR;
   }
 
-  get wheelBL(): InstancedMesh {
+  get wheelBL(): InstancedMesh | any {
     return this._wheelBL;
   }
 
-  get wheelBR(): InstancedMesh {
+  get wheelBR(): InstancedMesh | any {
     return this._wheelBR;
   }
 
-  get pivotL(): Mesh {
+  get pivotL(): Mesh | any {
     return this._pivotL;
   }
 
-  get pivotR(): Mesh {
+  get pivotR(): Mesh | any {
     return this._pivotR;
   }
 
-  get pivot(): Mesh {
+  get pivot(): Mesh | any {
     return this._pivot;
   }
 
@@ -171,42 +174,6 @@ class car {
 
   get topNew(): Vector3 {
     return this._topNew;
-  }
-
-  set top (val: Vector3) {
-    this._top = val;
-  }
-
-  set wheelFrontLeft (val: Vector3) {
-    this._wheelFrontLeft = val;
-  }
-
-  set wheelFrontRight (val: Vector3) {
-    this._wheelFrontRight = val;
-  }
-
-  set wheelBackLeft (val: Vector3) {
-    this._wheelBackLeft = val;
-  }
-
-  set wheelBackRight (val: Vector3) {
-    this._wheelBackRight = val;
-  }
-
-  set pivotLeft (val: Vector3) {
-    this._pivotLeft = val;
-  }
-
-  set pivotRight (val: Vector3) {
-    this._pivotRight = val;
-  }
-
-  set pivotZ (val: number) {
-    this._pivotZ = val;
-  }
-
-  set topNew (val: Vector3) {
-    this._topNew = val;
   }
 }
 
